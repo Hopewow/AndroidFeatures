@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AndroidFeatures.CameraPage"
+             Title="CameraPage">
+    <ScrollView VerticalScrollBarVisibility="Default" HorizontalScrollBarVisibility="Default">
+        <VerticalStackLayout>
+            <Image x:Name="Picture"/>
+            <Button Text="Take a lovely picture :O" Clicked="Button_Clicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

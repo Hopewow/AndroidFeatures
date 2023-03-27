@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AndroidFeatures.MainPage"
+             xmlns:viewmodel="clr-namespace:AndroidFeatures.ViewModel"
+             x:DataType="viewmodel:Navigation">
+
+    <ScrollView>
+        <VerticalStackLayout x:Name="Page"
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Button Command="{Binding TriggerShakeCommand}" Text="Trigger shake"/>
+            <Button Command="{Binding RedirectScannerCommand}" Text="To Scanner" />
+            <Button Command="{Binding RedirectCurrentLocationCommand}" Text="Geolocation" />
+            <Button Command="{Binding RedirectCameraCommand}" Text="Camera" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

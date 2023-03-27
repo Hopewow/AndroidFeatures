@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AndroidFeatures.CurrentLocationPage"
+             Title="CurrentLocationPage"
+             xmlns:viewmodel="clr-namespace:AndroidFeatures.ViewModel"
+             x:DataType="viewmodel:GeoLocationModel">
+    <VerticalStackLayout>
+        <Label x:Name="Lat"
+            Text="{Binding Lat}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label x:Name="Lon"
+            Text="{Binding Lon}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label x:Name="Alt"
+            Text="{Binding Altitude}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label x:Name="Acc"
+            Text="{Binding Accuracy}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        
+        <Button Command="{Binding GetCurrentLocationCommand}" Text="Get Current Location" />
+    </VerticalStackLayout>
+</ContentPage>
