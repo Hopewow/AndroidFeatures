@@ -20,9 +20,9 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<Navigation>();
-        builder.Services.AddSingleton<CurrentLocationPage>();
         builder.Services.AddSingleton<ScannerPage>();
-		builder.Services.AddSingleton<GeoLocationModel>();
+        builder.Services.AddTransient<CurrentLocationPage>();
+		builder.Services.AddTransient<GeoLocationModel>();
 		builder.Services.AddSingleton<CameraPage>();
 
 		return builder.Build();

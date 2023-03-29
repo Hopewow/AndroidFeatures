@@ -1,3 +1,7 @@
+using AndroidFeatures.Models;
+using Microsoft.Maui.Devices.Sensors;
+using System.Net.Http.Json;
+using System.Net;
 using ZXing;
 
 namespace AndroidFeatures;
@@ -15,6 +19,31 @@ public partial class ScannerPage : ContentPage
         };
     }
 
+    private async Task PostQRCode(string e)
+    {
+        try
+        {
+            ApiModel apiModel = new();
+            var Client = apiModel.getClient();
+
+            QRCodeM code = new()
+            {
+                code = e
+            };
+
+            HttpResponseMessage response = await Client.PostAsJsonAsync("QRCode", code);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                await Shell.Current.DisplayAlert("Error", "Data error please try again", "Ok");
+            }
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert("Error", "We encountered a serverside error please try again later", "OK");
+        }
+    }
+
     private async void BarcodeReader_BarcodesDetected(object sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
     {
         
@@ -27,6 +56,8 @@ public partial class ScannerPage : ContentPage
                 newLabel.Text = e.Results[0].Value;
 
                 Page.Add(newLabel);
+
+                PostQRCode(e.Results[0].Value);
             });
         } else {
             try
@@ -40,9 +71,9 @@ public partial class ScannerPage : ContentPage
 
                 await Browser.Default.OpenAsync(uri, options);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // An unexpected error occurred. No browser may be installed on the device.
+                await Shell.Current.DisplayAlert("Error", "We encountered and error while trying to open the link please try again", "OK");
             }
         }
     }
