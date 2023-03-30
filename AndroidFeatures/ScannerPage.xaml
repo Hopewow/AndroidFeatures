@@ -8,5 +8,19 @@
         <zxing:CameraBarcodeReaderView x:Name="barcodeReader" 
                          IsDetecting="True" IsTorchOn="False" 
             BarcodesDetected="BarcodeReader_BarcodesDetected"/>
+
+        <Label Text="QRCode:"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" 
+               Padding="0,80,0,5"/>
+        
+        <Label Text="" x:Name="QRCodeLabel"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center"
+               Padding="0,5,0,20"/>
+
+        <Button x:Name="UnlockBtn" Text="New Scan" IsVisible="false"
+                HorizontalOptions="Center" VerticalOptions="Center"
+                Clicked="UnlockBtn_Clicked"/>
     </VerticalStackLayout>
 </ContentPage>

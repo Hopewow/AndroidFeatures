@@ -1,3 +1,7 @@
+using AndroidFeatures.Models;
+using System.Net.Http.Json;
+using System.Net;
+
 namespace AndroidFeatures;
 
 public partial class CameraPage : ContentPage
@@ -15,14 +19,28 @@ public partial class CameraPage : ContentPage
 
             if (photo != null)
             {
-                // save the file into local storage
-                string localFilePath = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+                ApiModel apiModel = new();
+                var Client = apiModel.getClient();
 
-                using Stream sourceStream = await photo.OpenReadAsync();
-                using FileStream localFileStream = File.OpenWrite(localFilePath);
+                ImageUploadM image = new() {
+                    image = File.ReadAllBytes(photo.FullPath)
+                };
 
-                await sourceStream.CopyToAsync(localFileStream);
-                Picture.Source = ImageSource.FromFile(localFilePath);
+                HttpResponseMessage response = await Client.PostAsJsonAsync("ImageUpload", image);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    ImageUploadM rImage = await response.Content.ReadFromJsonAsync<ImageUploadM>();
+
+                    Picture.Source = ImageSource.FromStream(() =>
+                    {
+                        return new MemoryStream(rImage.image);
+                    });
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Data error please try again", "Ok");
+                }                
             }
         }
     }

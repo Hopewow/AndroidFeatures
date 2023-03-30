@@ -42,11 +42,6 @@ namespace AndroidFeatures.ViewModel
 
                 if (location != null)
                 {
-                    Lat = $"Latitude: {location.Latitude}";
-                    Lon = $"Longitude: {location.Longitude}";
-                    Altitude = $"Altitude: {location.Altitude}";
-                    Accuracy = $"Accuracy: {location.Accuracy}";
-
                     ApiModel apiModel = new();
                     var Client = apiModel.getClient();
 
@@ -60,10 +55,20 @@ namespace AndroidFeatures.ViewModel
 
                     HttpResponseMessage response = await Client.PostAsJsonAsync("GeoLocation", geoLocation);
 
-                    if (response.StatusCode != HttpStatusCode.OK)
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        GeoLocationM rLocation = await response.Content.ReadFromJsonAsync<GeoLocationM>();
+
+                        Lat = $"Latitude: {rLocation.latitude}";
+                        Lon = $"Longitude: {rLocation.longitude}";
+                        Altitude = $"Altitude: {rLocation.altitude}";
+                        Accuracy = $"Accuracy: {rLocation.accuracy}";
+                    } else
                     {
                         await Shell.Current.DisplayAlert("Error", "Data error please try again", "Ok");
                     }
+
+
                 }
             }
             // Catch one of the following exceptions:

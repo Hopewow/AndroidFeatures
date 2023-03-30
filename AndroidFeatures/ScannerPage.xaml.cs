@@ -19,6 +19,8 @@ public partial class ScannerPage : ContentPage
         };
     }
 
+    public bool LockScan { get; set; } = false;
+
     private async Task PostQRCode(string e)
     {
         try
@@ -33,7 +35,15 @@ public partial class ScannerPage : ContentPage
 
             HttpResponseMessage response = await Client.PostAsJsonAsync("QRCode", code);
 
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                QRCodeM rCode = await response.Content.ReadFromJsonAsync<QRCodeM>();
+
+                Dispatcher.Dispatch(() => {
+                    QRCodeLabel.Text = rCode.code;
+                });
+            }
+            else
             {
                 await Shell.Current.DisplayAlert("Error", "Data error please try again", "Ok");
             }
@@ -45,36 +55,44 @@ public partial class ScannerPage : ContentPage
     }
 
     private async void BarcodeReader_BarcodesDetected(object sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
-    {
-        
-        if (!e.Results[0].Value.StartsWith("https://"))
+    {    
+        if (!LockScan)
         {
-            Dispatcher.Dispatch(() => {
-                Label newLabel = new();
-
-                newLabel.Parent = Page;
-                newLabel.Text = e.Results[0].Value;
-
-                Page.Add(newLabel);
-
-                PostQRCode(e.Results[0].Value);
-            });
-        } else {
-            try
+            if (!e.Results[0].Value.StartsWith("https://"))
             {
-                Uri uri = new Uri(e.Results[0].Value);
-                BrowserLaunchOptions options = new BrowserLaunchOptions()
+                await PostQRCode(e.Results[0].Value);
+            }
+            else
+            {
+                try
                 {
-                    LaunchMode = BrowserLaunchMode.SystemPreferred,
-                    TitleMode = BrowserTitleMode.Show,
-                };
+                    Uri uri = new Uri(e.Results[0].Value);
+                    BrowserLaunchOptions options = new BrowserLaunchOptions()
+                    {
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        TitleMode = BrowserTitleMode.Show,
+                    };
 
-                await Browser.Default.OpenAsync(uri, options);
+                    await Browser.Default.OpenAsync(uri, options);
+                }
+                catch (Exception)
+                {
+                    await Shell.Current.DisplayAlert("Error", "We encountered and error while trying to open the link please try again", "OK");
+                }
             }
-            catch (Exception)
-            {
-                await Shell.Current.DisplayAlert("Error", "We encountered and error while trying to open the link please try again", "OK");
-            }
+
+            Dispatcher.Dispatch(() => {
+                LockScan = true;
+                UnlockBtn.IsVisible = true;
+            });
         }
+    }
+
+    private void UnlockBtn_Clicked(object sender, EventArgs e)
+    {
+        Dispatcher.Dispatch(() => {
+            LockScan = false;
+            UnlockBtn.IsVisible = false;
+        });
     }
 }
